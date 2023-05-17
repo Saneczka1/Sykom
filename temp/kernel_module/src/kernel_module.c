@@ -50,6 +50,10 @@ static bool is_hex(const char *buf, size_t count) {
     }
     return true;
 }
+/*
+static bool has_six_symbols(const char *buf, size_t count) {
+    return (count < 8);  // +znak końca linii
+}*/
 
 
 static ssize_t raba1_store(struct kobject *kobj,struct kobj_attribute *attr,const char *buf, size_t count)
@@ -60,6 +64,11 @@ static ssize_t raba1_store(struct kobject *kobj,struct kobj_attribute *attr,cons
         printk(KERN_ERR "Invalid hex string: %.*s\n", (int)count, buf);
         return -EINVAL;
     }
+
+   /* if (!has_six_symbols(buf, count)) {
+        printk(KERN_ERR "Invalid input: Must have max 6 symbols\n");
+        return -EINVAL;
+    }*/
 
 
     writel(raba1, SYKT_GPIO_ARG1_ADDR);
@@ -75,6 +84,11 @@ static ssize_t raba2_store(struct kobject *kobj,struct kobj_attribute *attr,cons
         printk(KERN_ERR "Invalid hex string: %.*s\n", (int)count, buf);
         return -EINVAL;
     }
+
+  /*  if (!has_six_symbols(buf, count)) {
+        printk(KERN_ERR "Invalid input: Must have max 6 symbols\n");
+        return -EINVAL;
+    }*/
 
     writel(raba2, SYKT_GPIO_ARG2_ADDR);
     return count;

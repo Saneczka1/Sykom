@@ -1,4 +1,4 @@
-#include <stdio.h>
+  #include <stdio.h>
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -21,27 +21,37 @@
 unsigned int read_from_file(char *);  
 int write_to_file(char *, unsigned int);
 struct multiplication_result multiply(unsigned int, unsigned int);
-int test_module();
+int test_module(int min_random,int max_random);
+int check_test_result(int test_result);
 
 
 
 
 int main(void){
-	int test = test_module();
+	int test = test_module(0,500);
+    check_test_result(test);
+    
+    int test1 = test_module(300000,500000);
+    check_test_result(test1);              ;
+
 /*test polega na tym że  daje testowe znaczenia
 i już  mam wynik mnożenia
 gdyż wynik oczekiwany różni się od output-u dodaje 1
 Te
 */
-	if(test > 0){
-		printf(" ERROR at %d values\n",test);
+}
+
+
+int check_test_result(int test_result){
+    if(test_result > 0){
+		printf(" ERROR at %d values\n",test_result);
 	}
 	else{
 		printf(" OK TEST PASSED\n");
 	}
 	return 0;
-}
 
+}
 
 
 unsigned int read_from_file(char *filePath){
@@ -119,16 +129,15 @@ struct multiplication_result multiply(unsigned int arg1, unsigned int arg2){
         readl = read_from_file(SYSFS_FILE_ONES);
        
         
-        if (readb == 3 && readw != 0 ){l++;}
+        if (readb == 3){l++;} //  ta linijka odpowiada za overflow
     
-      /*  if (readb == 0 )    
+        if (readb == 0 )    
             {
-            printf("result cannot be represented in 32 bits/n" );    
+            printf("result cannot be represented in 32 bits\n" ); 
+            printf("WARNING: a1 = %x, a2 = %x, \n", arg1, arg2);   
+            printf("\n"); 
             break;
-        }
-
-        if (k == 20 ){ break;}
-        k++;*/
+        }   
     }
    
     struct multiplication_result result;
@@ -162,7 +171,7 @@ int count_ones(unsigned int n) {
 }
 
 
-int test_module(){
+int test_module(int min_random, int max_random){
 
     typedef struct {
 		unsigned int a1;
@@ -173,11 +182,11 @@ int test_module(){
 
 
 
-	MyStruct values[500];
+	MyStruct values[50];
 
-	for (int i = 0; i < 500; i++) {
-        values[i].a1 = random_in_range(0, 1048575); 
-        values[i].a2 = random_in_range(0, 1048575);  
+	for (int i = 0; i < 50; i++) {
+        values[i].a1 = random_in_range(min_random, max_random); 
+        values[i].a2 = random_in_range(min_random, max_random);  
         values[i].w = values[i].a1 * values[i].a2;
         values[i].num_ones = count_ones(values[i].w);
     }
@@ -187,7 +196,7 @@ int test_module(){
 
 
     int k=0;
-    for(int i=0; i<100; i++){
+    for(int i=0; i<50; i++){
 		struct multiplication_result result = multiply(values[i].a1,values[i].a2);
 		if( result.w != values[i].w && result.l != values[i].num_ones){
 			printf("ERROR: a1 = %x, a2 = %x, expected w = %x, expected num_ones = %x, resultw = %x,resultl = %x\n", values[i].a1, values[i].a2, values[i].w, values[i].num_ones, result.w,result.l);
