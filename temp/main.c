@@ -70,7 +70,8 @@ unsigned int read_from_file(char *filePath){
     if(n>0){   
         buffer[n]='\0';
         close(file);
-        return strtoul(buffer, NULL, 16);  // 16 znaczy HEX
+        unsigned int  res =(strtoul(buffer, NULL, 16));  // 16 znaczy HEX
+        return res;
     }else{
         printf("Open %s - error %d\n", filePath, errno); 
         close(file);
