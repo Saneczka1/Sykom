@@ -25,24 +25,25 @@ int test_module(int min_random,int max_random);
 int check_test_result(int test_result);
 
 
-
-
-int main(void){
-	int test = test_module(0,500);
-    check_test_result(test);
-    
-    int test1 = test_module(300000,500000);
-    check_test_result(test1);              ;
-
 /*test polega na tym że  daje testowe znaczenia
 i już  mam wynik mnożenia
 gdyż wynik oczekiwany różni się od output-u dodaje 1
 Te
 */
+
+int main(void){
+	
+    int test = test_module(0,500);
+    check_test_result(test);
+    
+    int test1 = test_module(300000,500000);
+    check_test_result(test1);              
 }
 
 
+
 int check_test_result(int test_result){
+  
     if(test_result > 0){
 		printf(" ERROR at %d values\n",test_result);
 	}
@@ -55,17 +56,19 @@ int check_test_result(int test_result){
 
 
 unsigned int read_from_file(char *filePath){
-char buffer[MAX_BUFFER];
 
-	int file=open(filePath, O_RDONLY); 
+    char buffer[MAX_BUFFER];
+    int file=open(filePath, O_RDONLY); 
+
 	if(file<0){
 		printf("Open %s - error number %d\n", filePath, errno);
 		exit(1);
 	}	
+
 	int n=pread(file, buffer, MAX_BUFFER,0);
-	if(n>0){   
+	
+    if(n>0){   
         buffer[n]='\0';
-        
         close(file);
         return strtoul(buffer, NULL, 16);  // 16 znaczy HEX
     }else{
@@ -80,18 +83,23 @@ int write_to_file(char *filePath, unsigned int input){
 	char buffer[MAX_BUFFER];
     FILE *file=fopen(filePath, "w");
 	int fd_in=open(filePath, O_RDWR); 
-	if(fd_in < 0){  
-		 printf("Open %s - error number %d\n", filePath, errno);
-		 exit(2);
+	
+    if(fd_in < 0){  
+		printf("Open %s - error number %d\n", filePath, errno);
+		exit(2);
 	}
+
 	snprintf(buffer, MAX_BUFFER, "%x", input);
     int n=write(fd_in, buffer, strlen(buffer));
+
     if(n!=strlen(buffer)){
         printf("Open %s - error number %d \n", filePath, errno);
         close(fd_in);
         exit(3);
     }
+
 	close(fd_in);
+
     return 0;
 }
 
@@ -166,7 +174,8 @@ int count_ones(unsigned int n) {
         count++;
     }
     n=n/2;    
-    }       
+    }  
+
     return count;
 }
 
@@ -198,10 +207,12 @@ int test_module(int min_random, int max_random){
     int k=0;
     for(int i=0; i<50; i++){
 		struct multiplication_result result = multiply(values[i].a1,values[i].a2);
-		if( result.w != values[i].w && result.l != values[i].num_ones){
+		
+        if( result.w != values[i].w && result.l != values[i].num_ones){
 			printf("ERROR: a1 = %x, a2 = %x, expected w = %x, expected num_ones = %x, resultw = %x,resultl = %x\n", values[i].a1, values[i].a2, values[i].w, values[i].num_ones, result.w,result.l);
 			k++;
 		}
+       
         usleep(50000);
 	}
 
